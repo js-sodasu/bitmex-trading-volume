@@ -1,1 +1,103 @@
-Hello world!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Bitmex Trading Volume Viewer</title>
+	<meta charset="utf-8" />
+	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(function(){
+			var calcVolume = function(data){
+				//console.log(data.action,data.data);
+				var tVolume = 0;
+				var tPrice = 0.0;
+				var tSide = null;
+				var tTimestamp = null;
+				var dTrade = data.data;
+
+				var maxTradeLength = dTrade.length;
+				for(var cntTrade=0;cntTrade<maxTradeLength;cntTrade+=1)
+				{
+					var tmpTrade = dTrade[cntTrade];
+
+					tVolume += tmpTrade['size'];
+					tPrice = tmpTrade['price'];
+					tSide = tmpTrade['side'];
+					tTimestamp = tmpTrade['timestamp'];
+				}
+				//console.log(tTimestamp,tSide,tPrice,tVolume);
+				if(tVolume < 5000) return;
+
+				var tDate = new Date(tTimestamp);
+				var tTime = tDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+ 				
+ 				tVolume = new Intl.NumberFormat('en-US').format(tVolume);
+
+				var html = '<tr class="'+tSide+'">';
+				html += '<td class="t-price">' + tPrice + '</td>';
+				html += '<td class="t-volume">' + tVolume + '</td>';
+				html += '<td class="t-timestamp">' + tTime + '</td>';
+				html += '</tr>';
+				$('.trading').prepend(html);
+			};
+
+			//
+		
+		    var oSocket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=trade:XBTUSD");
+
+		    oSocket.onmessage = function (e) { 
+		        //console.log(e.data); 
+		        var data = JSON.parse(e.data);
+		        if(data.success == false)
+		        	oSocket.close(); //failed to connect socket :(
+		        
+		        if(data.table=='trade')
+		        	calcVolume(data);
+		        else
+		        	console.log(data);
+		    };
+
+		    oSocket.onopen = function (e) {
+		        
+		    };
+
+		    oSocket.onclose = function (e) {
+		        
+		    };
+		    oSocket.send('{"op": "subscribe", "args": ["trade:XBTUSD"]}');
+		    
+
+		});
+	</script>
+	<style>
+	.trading{
+		border-collapse: collapse;
+		width:500px;
+		color:#fff;
+	}
+	.trading tr.Sell td{
+		background: #ae543b;
+	}
+	.trading tr.Buy td{
+		background: #3e8654;
+	}
+	.trading td{
+		border:1px solid #fff;
+		padding:10px;
+	}
+	.t-price{
+		text-align:center;
+	}
+	.t-volume{
+		text-align:center;
+	}
+	.t-timestamp{
+		text-align:center;
+	}
+	</style>
+</head>
+<body>
+	<table class="trading">
+		
+	</table>
+</body>
+</html>

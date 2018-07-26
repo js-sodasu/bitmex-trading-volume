@@ -13,7 +13,7 @@
 				var tSide = null;
 				var tTimestamp = null;
 				var dTrade = data.data;
-
+				var minVol = parseInt($("#minVol").val());
 				var maxTradeLength = dTrade.length;
 				for(var cntTrade=0;cntTrade<maxTradeLength;cntTrade+=1)
 				{
@@ -25,7 +25,7 @@
 					tTimestamp = tmpTrade['timestamp'];
 				}
 				//console.log(tTimestamp,tSide,tPrice,tVolume);
-				if(tVolume < 5000) return;
+				if(tVolume < minVol) return;
 
 				var tDate = new Date(tTimestamp);
 				var tTime = tDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
@@ -69,6 +69,10 @@
 		});
 	</script>
 	<style>
+	.menu{
+		font-size:12px;
+		padding:10px;
+	}
 	.trading{
 		border-collapse: collapse;
 		width:500px;
@@ -96,8 +100,11 @@
 	</style>
 </head>
 <body>
-	<table class="trading">
-		
-	</table>
+	<div class="menu">
+		<label>Min. Volume</label>
+		<input type="text" id="minVol" value="5000" />
+	</div>
+
+	<table class="trading"></table>
 </body>
 </html>

@@ -4,8 +4,18 @@
 	<title>Bitmex Trading Volume Viewer</title>
 	<meta charset="utf-8" />
 	<script src="jquery-2.2.4.min.js"></script>
+	<script src="howler.min.js"></script>
 	<script type="text/javascript">
 		$(function(){
+			var t = JSON.parse('{"otherSellSmall":[1330,1221],"otherSellBig":[2550,1183],"otherBuySmall":[3740,1140],"otherBuyBig":[4882,1017],"myLimitOrderExecutedSmall":[5900,2940],"myLimitOrderExecutedBig":[8841,3027],"myLimitOrderExpired":[11868,677]}');
+			var h = new Howl({
+                src: ['sound.mp3'],
+                format: ["mp3"],
+                sprite: t,
+                autoplay: !1,
+                loop: !1,
+                volume: .5
+            });
 			var calcVolume = function(data){
 				//console.log(data.action,data.data);
 				var tVolume = 0;
@@ -27,6 +37,14 @@
 				//console.log(tTimestamp,tSide,tPrice,tVolume);
 				if(tVolume < minVol) return;
 
+				if($("#chkSound").is(":checked"))
+				{
+					if(tVolume>=1000000 && tSide == 'Sell') h.play('otherSellBig');
+					else if(tVolume>=100000 && tVolume < 1000000 && tSide == 'Sell') h.play('otherSellSmall');
+					
+					if(tVolume>=1000000 && tSide == 'Buy') h.play('otherBuyBig');
+					else if(tVolume>=100000 && tVolume < 1000000 && tSide == 'Buy') h.play('otherBuySmall');
+				}
 				var tDate = new Date(tTimestamp);
 				var tTime = tDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
  				
@@ -103,6 +121,9 @@
 	<div class="menu">
 		<label>Min. Volume</label>
 		<input type="text" id="minVol" value="5000" />
+		&nbsp;
+		<label>Sound on/off</label>
+		<input type="checkbox" id="chkSound" checked />
 	</div>
 
 	<table class="trading"></table>

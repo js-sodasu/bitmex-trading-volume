@@ -25,6 +25,12 @@
 				var dTrade = data.data;
 				var minVol = parseInt($("#minVol").val());
 				var maxTradeLength = dTrade.length;
+
+				var smallBuy = parseInt($("#smallBuy").val());
+				var bigBuy = parseInt($("#bigBuy").val());
+				var smallSell = parseInt($("#smallSell").val());
+				var bigSell = parseInt($("#bigSell").val());
+
 				for(var cntTrade=0;cntTrade<maxTradeLength;cntTrade+=1)
 				{
 					var tmpTrade = dTrade[cntTrade];
@@ -35,16 +41,19 @@
 					tTimestamp = tmpTrade['timestamp'];
 				}
 				//console.log(tTimestamp,tSide,tPrice,tVolume);
-				if(tVolume < minVol) return;
+				
 
 				if($("#chkSound").is(":checked"))
 				{
-					if(tVolume>=1000000 && tSide == 'Sell') h.play('otherSellBig');
-					else if(tVolume>=100000 && tVolume < 1000000 && tSide == 'Sell') h.play('otherSellSmall');
+					if(tVolume>=smallSell && tSide == 'Sell') h.play('otherSellBig');
+					else if(tVolume>=smallSell && tVolume < bigSell && tSide == 'Sell') h.play('otherSellSmall');
 					
-					if(tVolume>=1000000 && tSide == 'Buy') h.play('otherBuyBig');
-					else if(tVolume>=100000 && tVolume < 1000000 && tSide == 'Buy') h.play('otherBuySmall');
+					if(tVolume>=smallBuy && tSide == 'Buy') h.play('otherBuyBig');
+					else if(tVolume>=smallBuy && tVolume < bigBuy && tSide == 'Buy') h.play('otherBuySmall');
 				}
+
+				if(tVolume < minVol) return;
+
 				var tDate = new Date(tTimestamp);
 				var tTime = tDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
  				
@@ -58,6 +67,24 @@
 				$('.trading').prepend(html);
 			};
 
+			//
+			$(document)
+				.on("click","#smallBuyPlay",function(){				
+					h.play('otherBuySmall');
+					return false;
+				})
+				.on("click","#bigBuyPlay",function(){				
+					h.play('otherBuyBig');
+					return false;
+				})
+				.on("click","#smallSellPlay",function(){				
+					h.play('otherSellSmall');
+					return false;
+				})
+				.on("click","#bigSellPlay",function(){				
+					h.play('otherSellBig');
+					return false;
+				});
 			//
 		
 		    var oSocket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=trade:XBTUSD");
@@ -91,6 +118,14 @@
 		font-size:12px;
 		padding:10px;
 	}
+	.menu-cell{
+		padding:5px;
+	}
+	.menu-cell label{
+		display: inline-block;
+		width:100px;
+
+	}
 	.trading{
 		border-collapse: collapse;
 		width:500px;
@@ -119,11 +154,36 @@
 </head>
 <body>
 	<div class="menu">
-		<label>Min. Volume</label>
-		<input type="text" id="minVol" value="5000" />
-		&nbsp;
-		<label>Sound on/off</label>
-		<input type="checkbox" id="chkSound" checked />
+		<div class="menu-cell">
+			<label>Min. Volume</label>
+			<input type="text" id="minVol" value="5000" />
+		</div>
+	</div>
+	<div class="menu">
+		<div class="menu-cell">
+			<label>Sound on/off</label>
+			<input type="checkbox" id="chkSound" checked />
+		</div>
+		<div class="menu-cell">
+			<label>small buy</label>
+			<input type="text"  id="smallBuy" value="70000" />
+			<a href="#" id="smallBuyPlay">[Play]</a>
+		</div>
+		<div class="menu-cell">
+			<label>big buy</label>
+			<input type="text"  id="bigBuy" value="1000000" />
+			<a href="#" id="bigBuyPlay">[Play]</a>
+		</div>
+		<div class="menu-cell">
+			<label>small sell</label>
+			<input type="text"  id="smallSell" value="70000" />
+			<a href="#" id="smallSellPlay">[Play]</a>
+		</div>
+		<div class="menu-cell">
+			<label>big sell</label>
+			<input type="text"  id="bigSell" value="1000000" />
+			<a href="#" id="bigSellPlay">[Play]</a>
+		</div>
 	</div>
 
 	<table class="trading"></table>

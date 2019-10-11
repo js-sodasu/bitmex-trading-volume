@@ -45,10 +45,10 @@
 
 				if($("#chkSound").is(":checked"))
 				{
-					if(tVolume>=smallSell && tSide == 'Sell') h.play('otherSellBig');
+					if(tVolume>=bigSell && tSide == 'Sell') h.play('otherSellBig');
 					else if(tVolume>=smallSell && tVolume < bigSell && tSide == 'Sell') h.play('otherSellSmall');
 					
-					if(tVolume>=smallBuy && tSide == 'Buy') h.play('otherBuyBig');
+					if(tVolume>=bigBuy && tSide == 'Buy') h.play('otherBuyBig');
 					else if(tVolume>=smallBuy && tVolume < bigBuy && tSide == 'Buy') h.play('otherBuySmall');
 				}
 
@@ -166,22 +166,22 @@
 		</div>
 		<div class="menu-cell">
 			<label>small buy</label>
-			<input type="text"  id="smallBuy" value="70000" />
+			<input type="text"  id="smallBuy" value="5000" />
 			<a href="#" id="smallBuyPlay">[Play]</a>
 		</div>
 		<div class="menu-cell">
 			<label>big buy</label>
-			<input type="text"  id="bigBuy" value="1000000" />
+			<input type="text"  id="bigBuy" value="500000" />
 			<a href="#" id="bigBuyPlay">[Play]</a>
 		</div>
 		<div class="menu-cell">
 			<label>small sell</label>
-			<input type="text"  id="smallSell" value="70000" />
+			<input type="text"  id="smallSell" value="50000" />
 			<a href="#" id="smallSellPlay">[Play]</a>
 		</div>
 		<div class="menu-cell">
 			<label>big sell</label>
-			<input type="text"  id="bigSell" value="1000000" />
+			<input type="text"  id="bigSell" value="500000" />
 			<a href="#" id="bigSellPlay">[Play]</a>
 		</div>
 	</div>
